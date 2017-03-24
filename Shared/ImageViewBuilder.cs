@@ -13,14 +13,15 @@ namespace ProcessamentoDeImagens
         public static Form BuildImageView(string formTitle, Bitmap image)
         {
             Form form = new Form();
+            
             form.Text = formTitle;
             PictureBox pictureBox = new PictureBox();
             pictureBox.Dock = DockStyle.Fill;
             pictureBox.Image = image;
-            pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+            pictureBox.Size = image.Size;
             form.Controls.Add(pictureBox);
 
-            form.ShowDialog();
+            form.Show();
 
             return form;
         }

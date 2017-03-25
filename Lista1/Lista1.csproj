@@ -7,8 +7,8 @@
     <ProjectGuid>{269D70D0-D120-4B24-80A0-1DDF05CB5760}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProcessamentoDeImagens</RootNamespace>
-    <AssemblyName>ProcessamentoDeImagens</AssemblyName>
+    <RootNamespace>Lista1</RootNamespace>
+    <AssemblyName>Lista1</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

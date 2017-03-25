@@ -106,8 +106,8 @@ namespace ProcessamentoDeImagens
 
             Bitmap result = BitmapUtils.HSLTransform(orig, (hsl) =>
             {
-                //hsl[2] += hsl[2] * 0.1f;
-                return hsl;
+                hsl.L += hsl.L * 0.1d;
+                return hsl.ToColor();
             });
 
             createView("Original", orig);

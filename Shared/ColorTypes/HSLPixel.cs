@@ -9,6 +9,7 @@ namespace Shared.ColorTypes
 {
     public class HSLPixel
     {
+        //TODO: Limit HSL values.
         public double H;
         public double S;
         public double L;

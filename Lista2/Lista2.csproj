@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{269D70D0-D120-4B24-80A0-1DDF05CB5760}</ProjectGuid>
+    <ProjectGuid>{017D14DC-D364-4364-B165-D86C6F3F72FA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Lista1</RootNamespace>
-    <AssemblyName>Lista1</AssemblyName>
+    <RootNamespace>Lista2</RootNamespace>
+    <AssemblyName>Lista2</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -22,7 +22,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,25 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitmapHeaderInfoScreen.cs">
+    <Compile Include="Exercicio2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BitmapHeaderInfoScreen.Designer.cs">
-      <DependentUpon>BitmapHeaderInfoScreen.cs</DependentUpon>
+    <Compile Include="Exercicio2.Designer.cs">
+      <DependentUpon>Exercicio2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Lista1.cs">
+    <Compile Include="Lista2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Lista1.Designer.cs">
-      <DependentUpon>Lista1.cs</DependentUpon>
+    <Compile Include="Lista2.Designer.cs">
+      <DependentUpon>Lista2.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="BitmapHeaderInfoScreen.resx">
-      <DependentUpon>BitmapHeaderInfoScreen.cs</DependentUpon>
+    <EmbeddedResource Include="Exercicio2.resx">
+      <DependentUpon>Exercicio2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Lista1.resx">
-      <DependentUpon>Lista1.cs</DependentUpon>
+    <EmbeddedResource Include="Lista2.resx">
+      <DependentUpon>Lista2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -75,7 +74,6 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -91,11 +89,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\botão_2.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj">
-      <Project>{ce63782c-af79-4bec-8276-193b08dc78cf}</Project>
+      <Project>{CE63782C-AF79-4BEC-8276-193B08DC78CF}</Project>
       <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>

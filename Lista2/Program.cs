@@ -1,12 +1,10 @@
-﻿using Shared;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ProcessamentoDeImagens
+namespace Lista2
 {
     static class Program
     {
@@ -18,9 +16,7 @@ namespace ProcessamentoDeImagens
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            
-            Application.Run(new Lista1());
+            Application.Run(new Lista2());
         }
     }
 }

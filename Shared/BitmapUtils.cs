@@ -7,8 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// 
+/// </summary>
 namespace Shared
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class BitmapUtils
     {
 
@@ -21,42 +27,20 @@ namespace Shared
         {
             Bitmap[] results = new Bitmap[3];
 
-            results[0] = source.Clone() as Bitmap;
-            results[1] = source.Clone() as Bitmap;
-            results[2] = source.Clone() as Bitmap;
-
-            PixelsData data = source.GetAllPixels();
-
-            Task[] tasks = new Task[3];
-
-            tasks[0] = Task.Run(() =>
+            results[0] = source.Process((color, x, y) =>
             {
-                results[0].SetEachPixel((column, row) =>
-                {
-                    byte r = data.red[column][row];
-                    return Color.FromArgb(r, r, r);
-                });
+                return Color.FromArgb(color.R, color.R, color.R);
             });
 
-            tasks[1] = Task.Run(() =>
+            results[1] = source.Process((color, x, y) =>
             {
-                results[1].SetEachPixel((column, row) =>
-                {
-                    byte b = data.blue[column][row];
-                    return Color.FromArgb(b, b, b);
-                });
+                return Color.FromArgb(color.B, color.B, color.B);
             });
 
-            tasks[2] = Task.Run(() =>
+            results[2] = source.Process((color, x, y) =>
             {
-                results[2].SetEachPixel((column, row) =>
-                {
-                    byte g = data.green[column][row];
-                    return Color.FromArgb(g, g, g);
-                });
+                return Color.FromArgb(color.G, color.G, color.G);
             });
-
-            Task.WaitAll(tasks);
 
             return results;
         }
@@ -71,42 +55,25 @@ namespace Shared
         {
             Bitmap[] results = new Bitmap[3];
 
-            results[0] = source.Clone() as Bitmap;
-            results[1] = source.Clone() as Bitmap;
-            results[2] = source.Clone() as Bitmap;
-
-            PixelsData data = source.GetAllPixels();
-
-            Task[] tasks = new Task[3];
-
-            tasks[0] = Task.Run(() =>
+            results[0] = source.Process((color, column, row) =>
             {
-                results[0].SetEachPixel((column, row) =>
-                {
-                    byte c = (byte)(255 - (data.red[column][row]));
-                    return Color.FromArgb(c, c, c);
-                });
+                byte c = (byte)(255 - (color.R));
+                return Color.FromArgb(c, c, c);
             });
 
-            tasks[1] = Task.Run(() =>
+            results[1] = source.Process((color, column, row) =>
             {
-                results[1].SetEachPixel((column, row) =>
-                {
-                    byte m = (byte)(255 - (data.green[column][row]));
-                    return Color.FromArgb(m, m, m);
-                });
+                byte c = (byte)(255 - (color.G));
+                return Color.FromArgb(c, c, c);
             });
 
-            tasks[2] = Task.Run(() =>
+
+            results[2] = source.Process((color, column, row) =>
             {
-                results[2].SetEachPixel((column, row) =>
-                {
-                    byte y = (byte)(255 - (data.blue[column][row]));
-                    return Color.FromArgb(y, y, y);
-                });
+                byte c = (byte)(255 - (color.B));
+                return Color.FromArgb(c, c, c);
             });
 
-            Task.WaitAll(tasks);
 
             return results;
         }
@@ -114,43 +81,42 @@ namespace Shared
         //TODO Fix conversion, time function
         public static Bitmap HSLTransform(Bitmap source, Func<HSLPixel, Color> transformation)
         {
-            Bitmap result = source.Clone() as Bitmap;
+            return source.Process((color, x, y) => {
+                return transformation(new HSLPixel(color.R, color.G, color.B));
+            });
+        }
 
-            PixelsData data = source.GetAllPixels();
+        public static Bitmap ChangePixelSize(Bitmap source, int bitSize)
+        {
+            double scale = Math.Pow(2, bitSize);
+            double step = 255 / scale;
 
-
-            PixelsData d = new PixelsData(data.red.Length);
-
-            int height = data.red.Length;
-            int widht = data.red[0].Length;
-
-            for (int column = 0; column < height; column++)
+            return source.Process((color, x, y) =>
             {
-                d.red[column] = new byte[widht];
-                d.blue[column] = new byte[widht];
-                d.green[column] = new byte[widht];
+                int r, g, b;
+                r = (int)(Math.Round(scale * color.R / 255.0, MidpointRounding.AwayFromZero) * step);
+                g = (int)(Math.Round(scale * color.G / 255.0, MidpointRounding.AwayFromZero) * step);
+                b = (int)(Math.Round(scale * color.B / 255.0, MidpointRounding.AwayFromZero) * step);
 
-                for (int row = 0; row < widht; row++)
-                {
-                    HSLPixel hsl = new HSLPixel(data.red[column][row], data.green[column][row], data.blue[column][row]);
-
-                    Color c = transformation(hsl);
-
-                    d.red[column][row] = c.R;
-                    d.green[column][row] = c.G;
-                    d.blue[column][row] = c.B;
-
-                }
-            }
-
-
-            result.SetEachPixel((column, row) =>
-            {
-                return Color.FromArgb(d.red[column][row], d.green[column][row], d.blue[column][row]);
+                return Color.FromArgb(r, g, b);
             });
 
-            return result;
+        }
 
+        public static Bitmap ConvertToYUV422(Bitmap orig)
+        {
+            return orig.Process((color, x, y) =>
+            {
+                return new YUVPixel(color).ToColor();
+            });
+        }
+
+        public static Bitmap ConvertToYUV420(Bitmap orig)
+        {
+            return orig.Process((color, x, y) =>
+            {
+                return new YUVPixel(color).ToColor();
+            });
         }
 
     }

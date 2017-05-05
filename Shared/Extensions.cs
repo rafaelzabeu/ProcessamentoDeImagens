@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Shared.ColorTypes;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,163 +12,59 @@ namespace Shared
 {
     public static class Extensions
     {
-        /// <summary>
-        /// Iterates througt all pixels of the bitmap.
-        /// Slow.
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <param name="forEach"></param>
-        public static void ForEachPixel(this Bitmap bitmap, Action<int, int, Color> forEach)
+        public static Bitmap Process(this Bitmap original, Func<Color,int, int, Color> transform)
         {
-            for (int i = 0; i < bitmap.Width; i++)
+            Bitmap newImage = new Bitmap(original.Width, original.Height);
+
+            BitmapData originalData = original.LockBits(new Rectangle(
+                0, 0, original.Width, original.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+            BitmapData newData = newImage.LockBits(new Rectangle(
+                0, 0, newImage.Width, newImage.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+
+            unsafe
             {
-                for (int j = 0; j < bitmap.Height; j++)
+                int PixelSize = 3;
+
+                byte* originalRow = (byte*)originalData.Scan0;
+                byte* newRow = (byte*)newData.Scan0;
+
+                int width = original.Width;
+                int height = original.Height;
+
+                Parallel.For(0, height, y =>
                 {
-                    forEach(i, j, bitmap.GetPixel(i, j));
-                }
-            }
-        }
+                    for (int x = 0; x < width; x++)
+                    {
+                        int ptrIndex = (x * PixelSize) + (y * originalData.Stride);
 
-        /// <summary>
-        /// Iterates througt all pixels of the bitmap.
-        /// Faster, locks bitmap bits.
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <param name="forEach">colum, row, blue, green, red</param>
-        public static void GetEachPixel(this Bitmap bitmap, Action<int, int, byte, byte, byte> forEach)
-        {
-            //Area of the image to lock(all of it)
-            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-            //Lock the image so no one can change it, but any one can read
-            BitmapData data = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
+                        int r = (int)originalRow[ptrIndex + 2];
+                        int g = (int)originalRow[ptrIndex + 1];
+                        int b = (int)originalRow[ptrIndex];
 
-            //Address of the first line of pixels
-            IntPtr ptr = data.Scan0;
+                        Color novaCor = transform(Color.FromArgb(r, g, b), x, y);
 
-            //Makes an array to hold the pixel info
-            int bytes = data.Stride * bitmap.Height;
-            byte[] rgbValues = new byte[bytes];
-
-            //Copys the pixel info to the array
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-
-            //Keeps the info of the bitmap, so we can find the pixels in the array
-            int stride = data.Stride;
-            int height = data.Height;
-            int width = data.Width;
-
-            //The needed info is copied to the array, so unlock the bitmap
-            bitmap.UnlockBits(data);
-
-            for (int column = 0; column < height; column++)
-            {
-                for (int row = 0; row < width; row++)
-                {
-                    byte blue = rgbValues[(column * stride) + (row * 3)];
-                    byte green = rgbValues[(column * stride) + (row * 3) + 1];
-                    byte red = rgbValues[(column * stride) + (row * 3) + 2];
-                    forEach(column, row, blue, green, red);
-                }
-            }
-        }
-
-        public static void SetEachPixel(this Bitmap bitmap, Func<int, int, Color> forEach)
-        {
-            //Area of the image to lock(all of it)
-            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-            //Lock the image so no one can change it, but any one can read
-            BitmapData data = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
-
-            //Address of the first line of pixels
-            IntPtr ptr = data.Scan0;
-
-            //Makes an array to hold the pixel info
-            int bytes = data.Stride * bitmap.Height;
-            byte[] rgbValues = new byte[bytes];
-
-            //Copys the pixel info to the array
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-
-            //Keeps the info of the bitmap, so we can find the pixels in the array
-            int stride = data.Stride;
-            int height = data.Height;
-            int width = data.Width;
-
-            for (int column = 0; column < height; column++)
-            {
-                for (int row = 0; row < width; row++)
-                {
-                    Color c = forEach(column, row);
-                    rgbValues[(column * stride) + (row * 3)] = c.R;
-                    rgbValues[(column * stride) + (row * 3) + 1] = c.B;
-                    rgbValues[(column * stride) + (row * 3) + 2] = c.G;
-                }
+                        newRow[ptrIndex + 2] = (byte)novaCor.R;
+                        newRow[ptrIndex + 1] = (byte)novaCor.G;
+                        newRow[ptrIndex] = (byte)novaCor.B;
+                    }
+                });
             }
 
-            System.Runtime.InteropServices.Marshal.Copy(rgbValues,0,ptr,rgbValues.Length);
+            original.UnlockBits(originalData);
+            newImage.UnlockBits(newData);
 
-            bitmap.UnlockBits(data);
+            GC.Collect();
+
+            return newImage;
+
         }
 
-        public static PixelsData GetAllPixels(this Bitmap bitmap)
+        public static Bitmap ToGrayScale(this Bitmap original)
         {
-            //Area of the image to lock(all of it)
-            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-            //Lock the image so no one can change it, but any one can read
-            BitmapData data = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);
-
-            //Address of the first line of pixels
-            IntPtr ptr = data.Scan0;
-
-            //Makes an array to hold the pixel info
-            int bytes = data.Stride * bitmap.Height;
-            byte[] rgbValues = new byte[bytes];
-
-            //Copys the pixel info to the array
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-
-            //Keeps the info of the bitmap, so we can find the pixels in the array
-            int stride = data.Stride;
-            int height = data.Height;
-            int width = data.Width;
-
-            //The needed info is copied to the array, so unlock the bitmap
-            bitmap.UnlockBits(data);
-
-            PixelsData pixData = new PixelsData(height);
-
-
-            for (int column = 0; column < height; column++)
-            {
-                pixData.red[column] = new byte[width];
-                pixData.blue[column] = new byte[width];
-                pixData.green[column] = new byte[width];
-
-                for (int row = 0; row < width; row++)
-                {
-
-                    pixData.blue[column][row] = rgbValues[(column * stride) + (row * 3)];
-                    pixData.green[column][row] = rgbValues[(column * stride) + (row * 3) + 1];
-                    pixData.red[column][row] = rgbValues[(column * stride) + (row * 3) + 2];
-                }
-            }
-
-            return pixData;
-        }
-
-    }
-
-    public struct PixelsData
-    {
-        public byte[][] red;
-        public byte[][] blue;
-        public byte[][] green;
-
-        public PixelsData(int height)
-        {
-            red = new byte[height][];
-            blue = new byte[height][];
-            green = new byte[height][];
+            return original.Process((color, x, y) => {
+                int c = (int)((color.R * 0.299) + (color.G * 0.587) + (color.B * 0.114));
+                return Color.FromArgb(c, c, c);
+            });
         }
 
     }

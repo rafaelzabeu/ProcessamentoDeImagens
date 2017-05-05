@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="BitmapUtils.cs" />
     <Compile Include="ColorTypes\HSLPixel.cs" />
+    <Compile Include="ColorTypes\RGBPixel.cs" />
+    <Compile Include="ColorTypes\YUVPixel.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ImageGetter.cs" />
     <Compile Include="ImageViewBuilder.cs" />

@@ -119,6 +119,20 @@ namespace Shared
             });
         }
 
+        public static double GetBritness(Bitmap bitmap)
+        {
+            double sum = 0;
+
+            bitmap.ForEachPixel((color, x, y) =>
+            {
+                Color c = RGBPixel.ToGrayScale(color, RGBPixel.GrayScaleTypes.WeightedAverage);
+                sum += (c.R + c.G + c.B);
+            });
+
+            return Math.Floor(sum / (bitmap.Width * bitmap.Height));
+
+        }
+
     }
 
 }

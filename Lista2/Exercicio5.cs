@@ -13,32 +13,36 @@ using System.Windows.Forms;
 
 namespace Lista2
 {
-    public partial class Exercicio2 : Form
+    public partial class Exercicio5 : Form
     {
-        public Exercicio2()
+        public Exercicio5()
         {
             InitializeComponent();
         }
 
-        private void btn_loadImage_Click(object sender, EventArgs e)
+        private void bnt_loadImage_Click(object sender, EventArgs e)
         {
-            Bitmap image = ImageGetter.GetImageFromUser();
-            if (image == null)
+            Bitmap orig = ImageGetter.GetImageFromUser();
+            if (orig == null)
                 return;
-            int limiar = Convert.ToInt32(string.IsNullOrWhiteSpace(txt_limiar.Text) ? "0" : txt_limiar.Text);
+            int cut = Convert.ToInt32(string.IsNullOrWhiteSpace(txt_cut.Text) ? "0" : txt_cut.Text);
+            if (cut > 255)
+                cut = 255;
+            if (cut < 0)
+                cut = 0;
 
-            Bitmap changed = image.Process((color, x, y) =>
-            {
+            Bitmap mod = orig.Process((color, x, y) => {
                 Color c = RGBPixel.ToGrayScale(color, RGBPixel.GrayScaleTypes.WeightedAverage);
-                if (c.R >= limiar)
-                    return Color.White;
-                else
+
+                if (c.R > cut)
                     return Color.Black;
+                return c;
             });
 
-            Form f = ImageViewBuilder.BuildImageView("Imagem", changed);
+            Form f = ImageViewBuilder.BuildImageView("Mud", mod);
             f.Visible = false;
             f.ShowDialog();
+
         }
     }
 }

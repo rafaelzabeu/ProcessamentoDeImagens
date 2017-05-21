@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,11 +47,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exercicio1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exercicio1.Designer.cs">
+      <DependentUpon>Exercicio1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Exercicio2.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Exercicio2.Designer.cs">
       <DependentUpon>Exercicio2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exercicio3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exercicio3.Designer.cs">
+      <DependentUpon>Exercicio3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exercicio5.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exercicio5.Designer.cs">
+      <DependentUpon>Exercicio5.cs</DependentUpon>
     </Compile>
     <Compile Include="Lista2.cs">
       <SubType>Form</SubType>
@@ -60,8 +79,17 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Exercicio1.resx">
+      <DependentUpon>Exercicio1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Exercicio2.resx">
       <DependentUpon>Exercicio2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exercicio3.resx">
+      <DependentUpon>Exercicio3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Exercicio5.resx">
+      <DependentUpon>Exercicio5.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Lista2.resx">
       <DependentUpon>Lista2.cs</DependentUpon>

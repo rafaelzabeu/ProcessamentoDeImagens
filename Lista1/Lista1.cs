@@ -16,6 +16,11 @@ namespace ProcessamentoDeImagens
     public partial class Lista1 : Form
     {
 
+        public Lista1()
+        {
+            InitializeComponent();
+        }
+
         private List<Form> m_openForms = new List<Form>();
 
         private void closeOtherExercises()

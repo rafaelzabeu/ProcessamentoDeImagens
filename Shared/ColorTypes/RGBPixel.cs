@@ -72,5 +72,10 @@ namespace Shared.ColorTypes
                     return Color.FromArgb(value, value, value);
             }
         }
+
+        public static Color InvertContrast(Color c)
+        {
+            return Color.FromArgb(255 - c.R, 255 - c.G, 255 - c.B);
+        }
     }
 }

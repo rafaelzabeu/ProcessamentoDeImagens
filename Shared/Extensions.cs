@@ -135,5 +135,13 @@ namespace Shared
                 return RGBPixel.ToGrayScale(color,grayScaleType);
             });
         }
+
+        public static Bitmap InvertContrast(this Bitmap original)
+        {
+            return original.Process((color, x, y) =>
+            {
+                return RGBPixel.InvertContrast(color);
+            });
+        }
     }
 }

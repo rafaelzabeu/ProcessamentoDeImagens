@@ -17,9 +17,11 @@ namespace ProcessamentoDeImagens
             form.Text = formTitle;
             PictureBox pictureBox = new PictureBox();
             pictureBox.Dock = DockStyle.Fill;
+            pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
             pictureBox.Image = image;
             pictureBox.Size = image.Size;
             form.Controls.Add(pictureBox);
+            form.AutoSize = true;
 
             form.Show();
 

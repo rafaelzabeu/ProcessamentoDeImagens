@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Shared.ImageProcessing
 {
@@ -25,6 +26,15 @@ namespace Shared.ImageProcessing
                 Green[color.G]++;
                 Blue[color.B]++;
             });
+        }
+
+        public void FillGraph(Chart chart)
+        {
+            chart.Series[0].Points.Clear();
+            for (int i = 0; i < 256; i++)
+            {
+                chart.Series[0].Points.AddXY(i, Red[i]);
+            }
         }
 
     }

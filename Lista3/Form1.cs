@@ -78,5 +78,19 @@ namespace Lista3
             CreateView("Eq", eq);
 
         }
+
+        private void btn_exe4_Click(object sender, EventArgs e)
+        {
+            Bitmap bit = ImageGetter.GetImageFromUser();
+            if (bit == null)
+                return;
+
+            BlobFinder finder = new BlobFinder();
+
+            var v = finder.GetNumOfBlobs(bit);
+
+
+
+        }
     }
 }

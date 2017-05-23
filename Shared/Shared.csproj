@@ -52,6 +52,8 @@
     <Compile Include="ColorTypes\YUVPixel.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ImageGetter.cs" />
+    <Compile Include="ImageProcessing\Blob.cs" />
+    <Compile Include="ImageProcessing\BlobFinder.cs" />
     <Compile Include="ImageProcessing\Histogram.cs" />
     <Compile Include="ImageViewBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

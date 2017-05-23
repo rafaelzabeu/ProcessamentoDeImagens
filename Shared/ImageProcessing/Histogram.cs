@@ -46,10 +46,10 @@ namespace Shared.ImageProcessing
 
             int[] histoCum = new int[256];
 
-            histoCum[0] = (int)Math.Round(Red[0] * delta);
+            histoCum[0] = Clamp((int)Math.Round(Red[0] * delta),0,255);
             for (int i = 1; i < 256; i++)
             {
-                histoCum[i] = histoCum[i - 1] + (int)Math.Round((delta * Red[i]));
+                histoCum[i] = Clamp(histoCum[i - 1] + (int)Math.Round((delta * Red[i])),0,255);
             }
 
             return Image.Process((c, x, y) =>
@@ -59,5 +59,14 @@ namespace Shared.ImageProcessing
 
         }
 
+        private int Clamp(int value, int minValue, int maxValue)
+        {
+            if (value < minValue)
+                value = minValue;
+            if (value > maxValue)
+                value = maxValue;
+            return value;
+        }
+        
     }
 }

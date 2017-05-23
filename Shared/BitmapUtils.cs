@@ -133,6 +133,18 @@ namespace Shared
 
         }
 
+        public static Bitmap Limiarize(Bitmap orig, int limit)
+        {
+            return orig.Process((color, x, y) =>
+            {
+                Color c = RGBPixel.ToGrayScale(color, RGBPixel.GrayScaleTypes.WeightedAverage);
+                if (c.R < limit)
+                    return Color.Black;
+                else
+                    return Color.White;
+            });
+        }
+
     }
 
 }

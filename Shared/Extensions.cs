@@ -147,4 +147,18 @@ namespace Shared
             });
         }
     }
+
+    public static class ColorExtensions
+    {
+        public static bool Compare(this Color color, Color otherColor)
+        {
+            return color.ToArgb() == otherColor.ToArgb();
+        }
+
+        public static bool Compare(this Color color, int otherToARGB)
+        {
+            return color.ToArgb() == otherToARGB;
+        }
+    }
+
 }

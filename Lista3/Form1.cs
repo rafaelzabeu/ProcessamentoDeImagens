@@ -1,5 +1,6 @@
 ﻿using ProcessamentoDeImagens;
 using Shared;
+using Shared.ColorTypes;
 using Shared.ImageProcessing;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,21 @@ namespace Lista3
 
             CreateView("Orig", orig);
             CreateView("Changed", cha);
+
+        }
+
+        private void btn_exe3_Click(object sender, EventArgs e)
+        {
+            Bitmap image = ImageGetter.GetImageFromUser();
+
+            if (image == null)
+                return;
+
+            Histogram histo = new Histogram(image.ToGrayScale());
+
+            Bitmap eq = histo.MakeEqualizedVersion();
+
+            CreateView("Eq", eq);
 
         }
     }

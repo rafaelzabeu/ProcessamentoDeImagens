@@ -120,6 +120,9 @@ namespace Shared
 
             }
 
+            bitmap.UnlockBits(data);
+
+            GC.Collect();
         }
 
         /// <summary>

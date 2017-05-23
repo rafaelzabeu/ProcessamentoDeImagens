@@ -51,6 +51,7 @@
             this.btn_exe3.TabIndex = 13;
             this.btn_exe3.Text = "Exercicio 3";
             this.btn_exe3.UseVisualStyleBackColor = true;
+            this.btn_exe3.Click += new System.EventHandler(this.btn_exe3_Click);
             // 
             // btn_exe2
             // 

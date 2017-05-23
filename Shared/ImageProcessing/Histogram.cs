@@ -15,8 +15,11 @@ namespace Shared.ImageProcessing
         public int[] Green { get; set; }
         public int[] Blue { get; set; }
 
+        public Bitmap Image { get; set; }
+
         public Histogram(Bitmap bitmap)
         {
+            Image = bitmap;
             Red = new int[256];
             Green = new int[256];
             Blue = new int[265];
@@ -35,6 +38,25 @@ namespace Shared.ImageProcessing
             {
                 chart.Series[0].Points.AddXY(i, Red[i]);
             }
+        }
+
+        public Bitmap MakeEqualizedVersion()
+        {
+            double delta = 255 / ((double)Image.Width * Image.Height);
+
+            int[] histoCum = new int[256];
+
+            histoCum[0] = (int)Math.Round(Red[0] * delta);
+            for (int i = 1; i < 256; i++)
+            {
+                histoCum[i] = histoCum[i - 1] + (int)Math.Round((delta * Red[i]));
+            }
+
+            return Image.Process((c, x, y) =>
+            {
+                return Color.FromArgb(histoCum[c.R], histoCum[c.G], histoCum[c.B]);
+            });
+
         }
 
     }

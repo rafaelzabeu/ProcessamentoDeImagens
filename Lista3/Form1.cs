@@ -34,7 +34,7 @@ namespace Lista3
 
         private void CreateView(string name, Bitmap image)
         {
-            m_openForms.Add(ImageViewBuilder.BuildImageView(name, image));
+            m_openForms.Add(ViewBuilder.BuildImageView(name, image));
         }
 
         private void btn_exe1_Click(object sender, EventArgs e)
@@ -85,11 +85,15 @@ namespace Lista3
             if (bit == null)
                 return;
 
+            //Bitmap after = BitmapUtils.Limiarize(bit, 225);
+
             BlobFinder finder = new BlobFinder();
 
-            var v = finder.GetNumOfBlobs(bit);
 
+            var v = finder.Find(bit);
 
+            CreateView("Imagem limiarizada",BitmapUtils.Limiarize(bit, 225));
+            MessageBox.Show($"Existem {v} objetos distintos na imagem", "Exercicio 4", MessageBoxButtons.OK);
 
         }
     }

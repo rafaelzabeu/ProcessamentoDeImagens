@@ -34,7 +34,7 @@ namespace ProcessamentoDeImagens
 
         private void CreateView(string name, Bitmap image)
         {
-            m_openForms.Add(ImageViewBuilder.BuildImageView(name, image));
+            m_openForms.Add(ViewBuilder.BuildImageView(name, image));
         }
 
         private void btn_exe1_Click(object sender, EventArgs e)

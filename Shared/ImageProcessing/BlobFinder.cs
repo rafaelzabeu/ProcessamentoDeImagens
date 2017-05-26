@@ -17,17 +17,21 @@ namespace Shared.ImageProcessing
 
         private List<Blob> m_blobs;
 
-        private bool[,] m_visited;
+        private int[,] m_visited;
 
-        public List<Blob> GetNumOfBlobs(Bitmap image)
+        private int m_current;
+        private List<int> m_validIndexs;
+
+        public int Find(Bitmap bi)
         {
-            m_visited = new bool[image.Width, image.Height];
+            Bitmap bitmap = BitmapUtils.Limiarize(bi, 225);
+            BitmapData data = bitmap.LockBits(new Rectangle(
+                0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+
             m_blobs = new List<Blob>();
-
-            Bitmap gray = BitmapUtils.Limiarize(image, 220);
-
-            BitmapData data = gray.LockBits(new Rectangle(
-                0, 0, gray.Width, gray.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+            m_current = 0;
+            m_validIndexs = new List<int>();
+            m_visited = new int[bi.Width, bi.Height];
 
             unsafe
             {
@@ -35,88 +39,125 @@ namespace Shared.ImageProcessing
 
                 byte* row = (byte*)data.Scan0;
 
-                int width = gray.Width;
-                int height = gray.Height;
+                int width = bitmap.Width;
+                int height = bitmap.Height;
 
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        if (!m_visited[x, y])
-                        {
-                            int ptrIndex = (x * pixelSize) + (y * data.Stride);
-                            int r = row[ptrIndex + 2];
-                            int g = row[ptrIndex + 1];
-                            int b = row[ptrIndex];
+                        //find our pixel in the memory
+                        int ptrIndex = (x * pixelSize) + (y * data.Stride);
 
-                            Color c = Color.FromArgb(r, g, b);
-                            if (c.Compare(WHITE))
+                        //get its colors, stored in memory as BGR
+                        int r = (int)row[ptrIndex + 2];
+                        int g = (int)row[ptrIndex + 1];
+                        int b = (int)row[ptrIndex];
+
+                        Color c = Color.FromArgb(r, g, b);
+
+                        if (c.Compare(BLACK))
+                        {
+                            int i = CheckNeighbours(x, y);
+                            m_visited[x, y] = i;
+                            if (m_blobs.Count <= i - 1)
                             {
-                                Blob blob = CheckBlob(x, y, row, data.Stride, width, height);
-                                if (blob != null)
-                                    m_blobs.Add(blob);                                
+                                m_blobs.Add(new Blob());
                             }
+                            m_blobs[i - 1].Points.Add(new Point(x, y));
+
                         }
                     }
                 }
 
             }
 
-            gray.UnlockBits(data);
+            return m_validIndexs.Count;
 
-            GC.Collect();
-
-            return m_blobs;
         }
 
-        private unsafe Blob CheckBlob(int x, int y, byte* row, int stride, int width, int height)
+        private List<Blob> filterBlobs(int minSize, List<Blob> blobs)
         {
-            Blob blob = new Blob();
-            Queue<Point> pointsToSee = new Queue<Point>();
-
-            pointsToSee.Enqueue(new Point(x, y));
-            m_visited[x, y] = true;
-
-            while(pointsToSee.Count > 0)
+            List<Blob> newBlob = new List<Blob>();
+            foreach (var item in blobs)
             {
-                Point p = pointsToSee.Dequeue();
-
-                if (x - 1 > -1 && !m_visited[x - 1, y])
-                    CheckPixel(x - 1, y, row, stride, pointsToSee);
-
-                if (x + 1 < width && !m_visited[x + 1, y])
-                    CheckPixel(x + 1, y, row, stride, pointsToSee);
-
-                if (y - 1 > -1 && !m_visited[x, y - 1])
-                    CheckPixel(x, y - 1, row, stride, pointsToSee);
-
-                if (y + 1 < height && !m_visited[x, y + 1])
-                    CheckPixel(x, y + 1, row, stride, pointsToSee);
-
+                if (item.Points.Count > minSize)
+                    newBlob.Add(item);
             }
 
-            if (blob.Points.Count >= BLOB_THRESHOLD)
-                return blob;
-            else
-                return null;
+            return newBlob;
         }
 
-        private unsafe void CheckPixel(int x, int y, byte* row, int stride, Queue<Point> pointsToSee)
+        private int CheckNeighbours(int x, int y)
         {
-            int prtIndex = (x * 3) + (y * stride);
-            int r = row[prtIndex + 2];
-            int g = row[prtIndex + 1];
-            int b = row[prtIndex];
 
-            Color c = Color.FromArgb(r, g, b);
-            if(c.Compare(BLACK))
+            int cima = y - 1 > -1 ? y - 1 : -1;
+            int baixo = y + 1 < m_visited.GetLength(1) ? y + 1 : -1;
+            int esquerda = x - 1 > -1 ? x - 1 : -1;
+            int direita = x + 1 < m_visited.GetLength(0) ? x + 1 : -1;
+
+            int indexToReturn = int.MaxValue;
+
+            if (cima > -1 && m_visited[x, cima] > 0)
             {
-                m_visited[x, y] = true;
-                pointsToSee.Enqueue(new Point(x, y));
-            }
+                if (indexToReturn > m_visited[x, cima])
+                {
+                    indexToReturn = m_visited[x, cima];
+                }
+                else if(indexToReturn < m_visited[x, cima])
+                {
+                    m_validIndexs.Remove(m_visited[x, cima]);
+                    m_visited[x, cima] = indexToReturn;
+                }
 
+            }
+            if (esquerda > -1 && m_visited[esquerda, y] > 0)
+            {
+                if (indexToReturn > m_visited[esquerda, y])
+                {
+                    indexToReturn = m_visited[esquerda, y];
+                }
+                else if (indexToReturn < m_visited[esquerda, y])
+                {
+                    m_validIndexs.Remove(m_visited[esquerda, y]);
+                    m_visited[esquerda, y] = indexToReturn;
+                }
+
+            }
+            if (baixo > -1 && m_visited[x, baixo] > 0)
+            {
+                if (indexToReturn > m_visited[x, baixo])
+                {
+                    indexToReturn = m_visited[x, baixo];
+                }
+                else if (indexToReturn < m_visited[x, baixo])
+                {
+                    m_validIndexs.Remove(m_visited[x, baixo]);
+                    m_visited[x, baixo] = indexToReturn;
+                }
+
+            }
+            if (direita > -1 && m_visited[direita, y] > 0)
+            {
+                if (indexToReturn > m_visited[direita, y])
+                {
+                    indexToReturn = m_visited[direita, y];
+                }
+                else if (indexToReturn < m_visited[direita, y])
+                {
+                    m_validIndexs.Remove(m_visited[direita, y]);
+                    m_visited[direita, y] = indexToReturn;
+                }
+
+            }
+            
+            if(indexToReturn == int.MaxValue)
+            {
+                indexToReturn = ++m_current;
+                m_validIndexs.Add(indexToReturn);
+            }
+            return indexToReturn;
         }
 
     }
-
 }

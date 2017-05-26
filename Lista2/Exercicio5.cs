@@ -39,7 +39,7 @@ namespace Lista2
                 return c;
             });
 
-            Form f = ImageViewBuilder.BuildImageView("Mud", mod);
+            Form f = ViewBuilder.BuildImageView("Mud", mod);
             f.Visible = false;
             f.ShowDialog();
 

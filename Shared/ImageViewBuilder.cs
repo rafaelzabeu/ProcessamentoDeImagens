@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace ProcessamentoDeImagens
 {
-    public static class ImageViewBuilder
+    public static class ViewBuilder
     {
         public static Form BuildImageView(string formTitle, Bitmap image)
         {

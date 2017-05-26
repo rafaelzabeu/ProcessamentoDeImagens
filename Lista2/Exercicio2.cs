@@ -36,7 +36,7 @@ namespace Lista2
                     return Color.Black;
             });
 
-            Form f = ImageViewBuilder.BuildImageView("Imagem", changed);
+            Form f = ViewBuilder.BuildImageView("Imagem", changed);
             f.Visible = false;
             f.ShowDialog();
         }

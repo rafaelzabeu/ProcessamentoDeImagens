@@ -55,6 +55,7 @@
     <Compile Include="ImageProcessing\Blob.cs" />
     <Compile Include="ImageProcessing\BlobFinder.cs" />
     <Compile Include="ImageProcessing\Histogram.cs" />
+    <Compile Include="ImageProcessing\ImageMixer.cs" />
     <Compile Include="ImageViewBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

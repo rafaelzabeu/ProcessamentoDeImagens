@@ -161,4 +161,25 @@ namespace Shared
         }
     }
 
+    public static class MathExtensions
+    {
+        public static int Clamp(int i, int minValue, int maxValue)
+        {
+            if (i < minValue)
+                i = minValue;
+            if (i > maxValue)
+                i = maxValue;
+            return i;
+        }
+
+        public static double Clamp(double d, double minValue, double maxValue)
+        {
+            if (d < minValue)
+                d = minValue;
+            if (d > maxValue)
+                d = maxValue;
+            return d;
+        }
+    }
+
 }

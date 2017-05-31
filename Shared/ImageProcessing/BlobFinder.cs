@@ -13,8 +13,6 @@ namespace Shared.ImageProcessing
         readonly int WHITE = Color.White.ToArgb();
         readonly int BLACK = Color.Black.ToArgb();
 
-        readonly int BLOB_THRESHOLD = 20;
-
         private List<Blob> m_blobs;
 
         private int[,] m_visited;

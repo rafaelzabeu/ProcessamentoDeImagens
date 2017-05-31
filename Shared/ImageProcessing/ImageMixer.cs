@@ -133,19 +133,27 @@ namespace Shared.ImageProcessing
                 byte* row2 = (byte*)data2.Scan0;
                 byte* rowResut = (byte*)dataResult.Scan0;
 
-                Parallel.For(0, height, y =>
+                //Parallel.For(0, height, y =>
+                for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
+                        int r, g, b;
+
                         int ptrIndex = (x * pixelSize) + (y * data1.Stride);
 
                         Color newColor = BlendColorAlpha(GetColorAlpha(row1, ptrIndex), GetColorAlpha(row2, ptrIndex));
 
+                        r = newColor.R;
+                        g = newColor.G;
+                        b = newColor.B;
+
                         rowResut[ptrIndex + 2] = (byte)newColor.R;
                         rowResut[ptrIndex + 1] = (byte)newColor.G;
                         rowResut[ptrIndex] = (byte)newColor.B;
+
                     }
-                });
+                };
             }
 
             bit1.UnlockBits(data1);
@@ -168,11 +176,10 @@ namespace Shared.ImageProcessing
 
         private static unsafe Color GetColorAlpha(byte* row, int ptrIndex)
         {
-            int a = (int)row[ptrIndex + 3];
-            int r = (int)row[ptrIndex + 2];
-            int g = (int)row[ptrIndex + 1];
-            int b = (int)row[ptrIndex];
-
+            int a = row[ptrIndex + 3];
+            int r = row[ptrIndex + 2];
+            int g = row[ptrIndex + 1];
+            int b = row[ptrIndex];
             return Color.FromArgb(a, r, g, b);
         }
 
@@ -181,16 +188,14 @@ namespace Shared.ImageProcessing
             int r = (int)(c1.R * value1 + c2.R * value2);
             int g = (int)(c1.G * value1 + c2.G * value2);
             int b = (int)(c1.B * value1 + c2.B * value2);
-
             return Color.FromArgb(r, g, b);
         }
 
         private static unsafe Color BlendColorAlpha(Color c1, Color c2)
         {
-
-            int r = (int)(c1.R * c1.A + c2.R * c2.A);
-            int g = (int)(c1.G * c1.A + c2.G * c2.A);
-            int b = (int)(c1.B * c1.A + c2.B * c2.A);
+            int r = MathExtensions.Clamp((int)(c1.R * (c1.A / 255d) + c2.R * (c2.A / 255d)), 0, 255);
+            int g = MathExtensions.Clamp((int)(c1.G * (c1.A / 255d) + c2.G * (c2.A / 255d)), 0, 255);
+            int b = MathExtensions.Clamp((int)(c1.B * (c1.A / 255d) + c2.B * (c2.A / 255d)), 0, 255);
 
             return Color.FromArgb(r, g, b);
         }

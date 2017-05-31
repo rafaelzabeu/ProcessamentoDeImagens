@@ -1,4 +1,5 @@
 ﻿using Shared.ColorTypes;
+using Shared.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

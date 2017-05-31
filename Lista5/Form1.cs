@@ -45,7 +45,6 @@ namespace Lista5
                 boxSize.Items.Clear();
                 boxSize.Items.Add("3x3");
                 boxSize.Items.Add("5x5");
-
             }
             else
             {
@@ -56,7 +55,7 @@ namespace Lista5
                 boxSize.Items.Add("9x9");
             }
 
-            boxFilter.SelectedIndex = 0;
+            boxSize.SelectedIndex = 0;
         }
 
         private bool IsGrayScale()

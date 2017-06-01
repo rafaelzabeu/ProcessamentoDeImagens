@@ -90,6 +90,10 @@ namespace ProcessamentoDeImagens
             Bitmap result = BitmapUtils.HSLTransform(orig, (hsl) =>
             {
                 hsl.L += hsl.L * 0.1d;
+                if (hsl.L > 1)
+                    hsl.L = 1;
+                if (hsl.L < 0)
+                    hsl.L = 0;
                 return hsl.ToColor();
             });
 

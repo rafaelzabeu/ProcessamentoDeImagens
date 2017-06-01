@@ -95,9 +95,9 @@ namespace Shared
             return source.Process((color, x, y) =>
             {
                 int r, g, b;
-                r = (int)(Math.Round(scale * color.R / 255.0, MidpointRounding.AwayFromZero) * step);
-                g = (int)(Math.Round(scale * color.G / 255.0, MidpointRounding.AwayFromZero) * step);
-                b = (int)(Math.Round(scale * color.B / 255.0, MidpointRounding.AwayFromZero) * step);
+                r = (int)(Math.Round(scale * (color.R / 255d), MidpointRounding.AwayFromZero) * step);
+                g = (int)(Math.Round(scale * (color.G / 255d), MidpointRounding.AwayFromZero) * step);
+                b = (int)(Math.Round(scale * (color.B / 255d), MidpointRounding.AwayFromZero) * step);
 
                 return Color.FromArgb(r, g, b);
             });

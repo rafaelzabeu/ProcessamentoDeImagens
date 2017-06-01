@@ -31,13 +31,13 @@ namespace Shared
             Bitmap newImage = new Bitmap(original.Width, original.Height);
 
             BitmapData originalData = original.LockBits(new Rectangle(
-                0, 0, original.Width, original.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+                0, 0, original.Width, original.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             BitmapData newData = newImage.LockBits(new Rectangle(
-                0, 0, newImage.Width, newImage.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                0, 0, newImage.Width, newImage.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
 
             unsafe
             {
-                int PixelSize = 3;
+                int PixelSize = 4;
 
                 //Get the pointer to the start of the images
                 byte* originalRow = (byte*)originalData.Scan0;
@@ -56,14 +56,16 @@ namespace Shared
                         int ptrIndex = (x * PixelSize) + (y * originalData.Stride);
 
                         //get its colors, stored in memory as BGR
+                        int a = (int)originalRow[ptrIndex + 3];
                         int r = (int)originalRow[ptrIndex + 2];
                         int g = (int)originalRow[ptrIndex + 1];
                         int b = (int)originalRow[ptrIndex];
 
                         //transform it according to the passed Func
-                        Color novaCor = transform(Color.FromArgb(r, g, b), x, y);
+                        Color novaCor = transform(Color.FromArgb(a,r, g, b), x, y);
 
                         //set the new color in the bitmap to be returned
+                        newRow[ptrIndex + 3] = (byte)novaCor.A;
                         newRow[ptrIndex + 2] = (byte)novaCor.R;
                         newRow[ptrIndex + 1] = (byte)novaCor.G;
                         newRow[ptrIndex] = (byte)novaCor.B;
